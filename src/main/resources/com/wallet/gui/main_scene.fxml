@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.geometry.Insets?>
+<?import java.lang.String?>
+
+<TabPane fx:controller="com.wallet.gui.MainController"
+         xmlns:fx="http://javafx.com/fxml/1"
+         xmlns="http://javafx.com/javafx/21">
+
+<!--    <stylesheets>-->
+<!--        <String fx:value="@styles.css" />-->
+<!--    </stylesheets>-->
+
+    <tabs>
+        <Tab text="Счета и Баланс" closable="false">
+            <content>
+                <VBox spacing="10.0">
+                    <HBox alignment="TOP_RIGHT" spacing="10.0" VBox.vgrow="NEVER" styleClass="total-balance-box">
+                        <VBox alignment="TOP_RIGHT">
+                            <Label text="Общий баланс" styleClass="total-balance-label"/>
+
+                            <Label fx:id="totalBalanceValue"
+                                   text="0.00 ₽"
+                                   styleClass="total-balance-value"/>
+                        </VBox>
+
+                        <Button fx:id="toggleBalanceButton"
+                                onAction="#handleToggleBalanceVisibility"
+                                text="👁️"
+                                styleClass="icon-button"/>
+                    </HBox>
+                    <padding>
+                        <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
+                    </padding>
+                    <Label text="Список всех счетов:" style="-fx-font-weight: bold;"/>
+                    <ListView fx:id="accountListView" VBox.vgrow="ALWAYS"/>
+
+                    <Label text="Создать новый счет:"/>
+                    <HBox spacing="10.0">
+                        <TextField fx:id="newAccountNameField" promptText="Название счета" HBox.hgrow="ALWAYS"/>
+                        <TextField fx:id="newAccountBalanceField" promptText="Начальный баланс (0.00)"/>
+                        <Button text="Создать" onAction="#handleCreateAccount" styleClass="create-button"/>
+                        <Button text="Удалить выбранный" onAction="#handleDeleteAccount"/>
+                    </HBox>
+                    <Text fx:id="statusText" fill="BLACK" text="Интерфейс запущен. Логика отключена."/>
+                </VBox>
+            </content>
+        </Tab>
+
+        <Tab text="Операции" closable="false">
+            <content>
+                <VBox spacing="15.0">
+                    <padding>
+                        <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
+                    </padding>
+
+                    <Label text="Тип операции:"/>
+                    <ChoiceBox fx:id="operationTypeChoice" maxWidth="Infinity"/>
+
+                    <Label text="Параметры операции:"/>
+                    <GridPane hgap="10" vgap="10">
+                        <Label text="Исходный счет:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="sourceAccountCombo" promptText="Выберите счет" GridPane.rowIndex="0" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+                        <Label text="Целевой счет:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                        <ComboBox fx:id="targetAccountCombo" promptText="Только для 'Перевода'" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity"/>
+
+                        <Label text="Сумма:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                        <TextField fx:id="amountField" promptText="0.00" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                        <Label text="Описание:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                        <TextField fx:id="descriptionField" promptText="Например, покупка кофе" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                    </GridPane>
+
+                    <Button text="Выполнить Операцию" onAction="#handleExecuteOperation" maxWidth="Infinity"/>
+
+                    <Text fx:id="operationStatusText" fill="BLACK" text=""/>
+                </VBox>
+            </content>
+        </Tab>
+
+        <Tab text="История" closable="false">
+            <content>
+                <VBox spacing="10.0">
+                    <padding>
+                        <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
+                    </padding>
+                    <Label text="История операций:"/>
+                    <ComboBox fx:id="historyAccountCombo" promptText="Фильтр по счету" maxWidth="Infinity"/>
+
+                    <Button text="Обновить Историю" onAction="#handleShowHistory"/>
+
+                    <TableView fx:id="historyTableView" VBox.vgrow="ALWAYS">
+                        <columns>
+                            <TableColumn text="Дата" prefWidth="100"/>
+                            <TableColumn text="Счет" prefWidth="100"/>
+                            <TableColumn text="Тип" prefWidth="80"/>
+                            <TableColumn text="Сумма" prefWidth="100"/>
+                            <TableColumn text="Описание" prefWidth="250"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </content>
+        </Tab>
+    </tabs>
+</TabPane>
