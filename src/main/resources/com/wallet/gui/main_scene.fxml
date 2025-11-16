@@ -10,9 +10,9 @@
          xmlns:fx="http://javafx.com/fxml/1"
          xmlns="http://javafx.com/javafx/21">
 
-<!--    <stylesheets>-->
-<!--        <String fx:value="@styles.css" />-->
-<!--    </stylesheets>-->
+    <!--    <stylesheets>-->
+    <!--        <String fx:value="@styles.css" />-->
+    <!--    </stylesheets>-->
 
     <tabs>
         <Tab text="Счета и Баланс" closable="false">
@@ -63,16 +63,20 @@
                     <Label text="Параметры операции:"/>
                     <GridPane hgap="10" vgap="10">
                         <Label text="Исходный счет:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                        <ComboBox fx:id="sourceAccountCombo" promptText="Выберите счет" GridPane.rowIndex="0" GridPane.columnIndex="1" maxWidth="Infinity"/>
+                        <ComboBox fx:id="sourceAccountCombo" promptText="Выберите счет" GridPane.rowIndex="0"
+                                  GridPane.columnIndex="1" maxWidth="Infinity"/>
 
                         <Label text="Целевой счет:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                        <ComboBox fx:id="targetAccountCombo" promptText="Только для 'Перевода'" GridPane.rowIndex="1" GridPane.columnIndex="1" maxWidth="Infinity"/>
+                        <ComboBox fx:id="targetAccountCombo" promptText="Только для 'Перевода'" GridPane.rowIndex="1"
+                                  GridPane.columnIndex="1" maxWidth="Infinity"/>
 
                         <Label text="Сумма:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                        <TextField fx:id="amountField" promptText="0.00" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                        <TextField fx:id="amountField" promptText="0.00" GridPane.rowIndex="2"
+                                   GridPane.columnIndex="1"/>
 
                         <Label text="Описание:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                        <TextField fx:id="descriptionField" promptText="Например, покупка кофе" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                        <TextField fx:id="descriptionField" promptText="Например, покупка кофе" GridPane.rowIndex="3"
+                                   GridPane.columnIndex="1"/>
                     </GridPane>
 
                     <Button text="Выполнить Операцию" onAction="#handleExecuteOperation" maxWidth="Infinity"/>

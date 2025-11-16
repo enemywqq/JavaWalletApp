@@ -9,13 +9,14 @@ import java.util.Optional;
 public interface Storage {
 
     void save(Account account);
+
     void delete(String accountId);
 
     void addOperation(Operation operation);
 
     List<Account> findAllAccounts();
 
-    Optional<Account> findAccountById(String accountId);
+    Account findAccountById(String accountId);
 
     List<Operation> findAllOperations();
 

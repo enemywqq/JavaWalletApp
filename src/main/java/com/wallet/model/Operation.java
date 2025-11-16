@@ -14,8 +14,8 @@ public abstract class Operation {
     private final Account account;
 
 
-    public Operation(Account account, BigDecimal amount, String operationCategory){
-        if (amount.compareTo(BigDecimal.ZERO) <= 0){
+    public Operation(Account account, BigDecimal amount, String operationCategory) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new ValidationException("Сумма операции не может быть отрицательной или равна нулю");
         }
         this.amount = amount;
@@ -29,7 +29,7 @@ public abstract class Operation {
     public abstract void execute();
 
 
-    public String getId(){
+    public String getId() {
         return id;
     }
 

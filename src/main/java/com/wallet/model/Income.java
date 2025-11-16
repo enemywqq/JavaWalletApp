@@ -2,11 +2,10 @@ package com.wallet.model;
 
 import java.math.BigDecimal;
 
-public class Income extends Operation{
+public class Income extends Operation {
 
 
-
-    public Income(Account account, BigDecimal amount, String IncomeCategory){
+    public Income(Account account, BigDecimal amount, String IncomeCategory) {
         super(account, amount, IncomeCategory);
     }
 

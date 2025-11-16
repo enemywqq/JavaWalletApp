@@ -1,4 +1,5 @@
 package com.wallet.model;
+
 import java.util.UUID;
 
 import com.wallet.exceptions.InsufficientBalanceException;
@@ -17,10 +18,8 @@ public class Account {
     private BigDecimal balance;
 
 
-
-
-    public Account(String name, BigDecimal initialBalance){
-        if (initialBalance.compareTo(BigDecimal.ZERO) < 0){
+    public Account(String name, BigDecimal initialBalance) {
+        if (initialBalance.compareTo(BigDecimal.ZERO) < 0) {
             throw new ValidationException("Нельзя создать счет с отрицательным балансом");
         }
         this.name = name;
@@ -31,42 +30,41 @@ public class Account {
     }
 
 
-
-    public void withdraw(BigDecimal amount){
-        if (amount.compareTo(BigDecimal.ZERO) <= 0 ){
+    public void withdraw(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new ValidationException("Сумма вывода должна быть строго положительной");
         }
-        if (amount.compareTo(balance) == 1){
+        if (amount.compareTo(balance) == 1) {
             throw new InsufficientBalanceException("Недостаточно средств на счете");
         }
         balance = this.balance.subtract(amount);
 
     }
 
-    public void deposit(BigDecimal amount){
-        if (amount.compareTo(BigDecimal.ZERO) <= 0){
+    public void deposit(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new ValidationException("Сумма пополнения должна быть строго положительной");
         }
         balance = this.balance.add(amount);
     }
 
-    public void addOperation(Operation operation){
+    public void addOperation(Operation operation) {
         historyOperation.add(operation);
     }
 
-    public String getId(){
+    public String getId() {
         return id;
     }
 
-    public BigDecimal getBalance(){
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public List<Operation> getHistory(){
+    public List<Operation> getHistory() {
         return historyOperation;
     }
 
