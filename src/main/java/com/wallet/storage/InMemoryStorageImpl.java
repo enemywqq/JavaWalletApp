@@ -34,8 +34,19 @@ public class InMemoryStorageImpl implements Storage {
 
     @Override
     public List<Operation> findAllOperations() {
+
         return new ArrayList<>(operations);
     }
+
+//    @Override
+//    public List<Operation> findAllOperations() {
+//        List<Operation> result = new ArrayList<>();
+//        for ( Operation operation : operations){
+//            result.add(operation);
+//        }
+//        return result;
+//
+//    }
 
 //    @Override
 //    public Optional<Account> findAccountById(String accountId){

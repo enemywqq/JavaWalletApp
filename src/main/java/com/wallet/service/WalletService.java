@@ -31,19 +31,21 @@ public interface WalletService {
     //Просмотр истории операций.
 
 
+    public BigDecimal geTotalBalance();
+
+    public BigDecimal showBalance(String id);
+
     public Account createAccount(String name, BigDecimal initialBalance);
 
     public List<Account> showListAccounts();
 
-    public BigDecimal showBalance(Account account);
+    public void deleteAccount(String id);
 
-    public void deleteAccount(Account Account);
+    public void makeIncome(String id, BigDecimal amount, String category);
 
-    public void makeIncome(Account account, BigDecimal amount, String category);
+    public void makeExpense(String id, BigDecimal amount, String category);
 
-    public void makeExpense(Account account, BigDecimal amount, String category);
-
-    public void makeTransfer(Account sourceAccount, Account destinationAccount, BigDecimal amount, String category);
+    public void makeTransfer(String sourceAccountId, String destinationAccountId, BigDecimal amount, String category);
 
     public List<Operation> showListOperations();
 

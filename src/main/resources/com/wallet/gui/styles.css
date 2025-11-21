@@ -1,204 +1,205 @@
-/*
- * ФИНАЛЬНАЯ ЧИСТКА ДИЗАЙНА
- * Убраны все голубые фокусы, улучшена контрастность.
- */
-
-/* ==========================================================
- * ГЛОБАЛЬНАЯ ОЧИСТКА ФОКУСОВ
- * ========================================================== */
-
-/* Убираем все фокусные цвета и обводки для всего приложения */
-* {
-    -fx-faint-focus-color: transparent;
-    -fx-focus-color: transparent;
-    -fx-base: white;
-}
-
-/* Сброс выделения текста внутри элементов (чтобы не было голубого фона на тексте) */
-.text-field, .combo-box, .text {
-    -fx-highlight-fill: #e5e7eb; /* Очень светло-серый фон вместо голубого при выделении */
-    -fx-highlight-text-fill: #333333; /* Сохраняем темный цвет текста */
-}
-
-/* ==========================================================
- * 1. ОСНОВНЫЕ КОНТЕЙНЕРЫ
- * ========================================================== */
-
-.tab-pane {
-    -fx-background-color: #f0f2f5;
-    -fx-padding: 15px;
-}
-.tab-content-area {
-    -fx-background-color: #ffffff;
-}
-
-/* ==========================================================
- * 2. ВКЛАДКИ
- * ========================================================== */
-
-.tab-pane .tab-header-area {
-    -fx-background-color: transparent;
-}
-.tab {
-    -fx-background-color: #e4e6e9;
-    -fx-background-radius: 8px 8px 0 0;
-    -fx-padding: 10px 20px 10px 20px;
-    -fx-border-width: 0;
-}
-.tab:selected {
-    -fx-background-color: white;
-    -fx-border-color: #3b82f6;
-    -fx-border-width: 0 0 3px 0;
-    -fx-border-style: solid;
-}
-.tab-pane .tab-label {
-    -fx-text-fill: #333333;
-    -fx-font-weight: 500;
-}
-.tab:selected .tab-label {
-    -fx-text-fill: #3b82f6;
-    -fx-font-weight: bold;
-}
-
-/* ==========================================================
- * 3. КНОПКИ
- * ========================================================== */
-
-.button {
-    -fx-background-color: #3b82f6;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-padding: 8 15 8 15;
-    -fx-background-radius: 6;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0.2, 0, 2);
-    -fx-focus-color: transparent;
-}
-.button:hover {
-    -fx-background-color: #2563eb;
-}
-.create-button {
-    -fx-background-color: #2ecc71;
-}
-.create-button:hover {
-    -fx-background-color: #27ae60;
-}
-
-/* ==========================================================
- * 4. ПОЛЯ ВВОДА И ВЫБОРА (Включая ComboBox)
- * ========================================================== */
-
-.text-field, .combo-box, .choice-box {
-    -fx-background-color: white;
-    -fx-border-color: #d1d5db;
-    -fx-border-width: 1px;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-padding: 7;
-    -fx-focus-color: transparent;
-}
-
-/* Комбо-бокс (ComboBox) при нажатии - убираем фон */
-.combo-box .list-cell {
-    -fx-background-color: white;
-    -fx-text-fill: #333333;
-}
-.combo-box .list-cell:filled:selected, .choice-box .list-cell:filled:selected {
-    -fx-background-color: #f0f2f5; /* Очень светлый фон при выборе */
-    -fx-text-fill: #333333;
-}
-
-/* ==========================================================
- * 5. СПИСКИ И ТАБЛИЦЫ (УЛУЧШЕННЫЙ КОНТРАСТ И ЧИСТОТА)
- * ========================================================== */
-
-.list-view, .table-view {
-    -fx-background-color: white;
-    -fx-border-color: #e5e7eb;
-    -fx-border-width: 1px;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-focus-color: transparent;
-}
-
-/* Ячейки списка (ListView) */
-.list-cell {
-    -fx-background-color: white;
-    -fx-text-fill: #333333;
-    -fx-padding: 8px 10px;
-    -fx-border-color: #e5e7eb;
-    -fx-border-width: 0 0 1px 0;
-}
-.list-cell:filled:selected {
-    -fx-background-color: #f0f2f5; /* Делаем выбор менее ярким */
-    -fx-text-fill: #333333;
-    -fx-font-weight: normal; /* Снимаем жирность */
-}
-.list-cell:filled:hover {
-    -fx-background-color: #eff6ff;
-}
-
-/* ТАБЛИЦА (TableView) - чистый вид */
-.table-view .column-header-background {
-    -fx-background-color: #f0f2f5; /* Светлый заголовок */
-    -fx-border-color: #e5e7eb;
-    -fx-border-width: 0 0 1px 0;
-}
-.table-view .column-header .label {
-    -fx-text-fill: #4b5563;
-    -fx-font-weight: bold;
-}
-
-/* Строки таблицы - четкий разделитель */
-.table-row-cell {
-    -fx-cell-selection-enabled: true;
-    -fx-background-color: white;
-    -fx-border-color: #e5e7eb;
-    -fx-border-width: 0 0 1px 0;
-}
-.table-row-cell:selected {
-    -fx-background-color: #f0f2f5; /* Светло-серый фон при выборе строки */
-}
-
-/* ==========================================================
- * 6. МЕТКИ И ТЕКСТ
- * ========================================================== */
-
-.label, .text {
-    -fx-text-fill: #333333;
-    -fx-font-size: 13px;
-}
-
-```css
-/* ==========================================================
- * 7. СТИЛИ ОБЩЕГО БАЛАНСА
- * ========================================================== */
-
-.total-balance-box {
-    -fx-padding: 0 0 10px 0; /* Небольшой отступ снизу */
-}
-
-.total-balance-label {
+/* Глобальные настройки шрифтов */
+.root {
+    -fx-font-family: "Segoe UI", "Roboto", sans-serif;
     -fx-font-size: 14px;
-    -fx-text-fill: #6b7280; /* Светло-серый цвет */
+}
+
+/* Фон всего приложения (светло-серый) */
+.main-background {
+    -fx-background-color: #F0F2F5;
+}
+
+/* =========================================
+   ВЕРХНЯЯ КАРТОЧКА (БАЛАНС)
+   ========================================= */
+.card-top {
+    -fx-background-color: white;
+    -fx-background-radius: 20px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);
+}
+
+.label-gray {
+    -fx-text-fill: #808080;
+    -fx-font-size: 13px;
     -fx-font-weight: normal;
 }
 
-.total-balance-value {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #1f2937; /* Темно-серый цвет */
+.label-balance {
+    -fx-text-fill: #000000;
+    -fx-font-size: 28px;
+    -fx-font-weight: 800; /* Extra Bold */
 }
 
-/* Стиль для кнопки-иконки (глаз) */
-.icon-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: #6b7280; /* Серый цвет иконки */
-    -fx-font-size: 16px;
+/* Кнопка настроек (Синий квадрат со скруглением) */
+.btn-settings {
+    -fx-background-color: #124EC5;
+    -fx-text-fill: white;
+    -fx-font-size: 18px; /* Размер иконки/символа */
+    -fx-min-width: 44px;
+    -fx-min-height: 44px;
+    -fx-background-radius: 12px; /* Специфичное скругление как на фото */
+    -fx-cursor: hand;
     -fx-padding: 0;
-    -fx-effect: none; /* Убираем тень, которая была у кнопок */
 }
-.icon-button:hover {
-    -fx-text-fill: #3b82f6; /* Синий при наведении */
+.btn-settings:hover {
+    -fx-background-color: #0f3ea3;
+}
+
+/* =========================================
+   ВКЛАДКИ (TABS)
+   ========================================= */
+
+/* Контейнер для кнопок вкладок (Серый фон под ушками) */
+.tabs-header {
+    -fx-background-color: #E0E0E0; /* Цвет неактивной вкладки */
+    -fx-background-radius: 20px 20px 0 0;
+    -fx-padding: 0;
+    -fx-spacing: 0;
+}
+
+/* Стиль кнопок-вкладок */
+.tab-button {
     -fx-background-color: transparent;
+    -fx-text-fill: #757575;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 20px 20px 0 0;
+    -fx-border-width: 0;
+    -fx-padding: 15px;
+    -fx-cursor: hand;
+}
+
+/* Активная вкладка (Белая, сливается с контентом) */
+.tab-button:selected {
+    -fx-background-color: white;
+    -fx-text-fill: #124EC5; /* Синий текст */
+}
+
+/* Иконки внутри вкладок (эмодзи) */
+.tab-button .text {
+    -fx-fill: inherit;
+}
+
+/* Контейнер содержимого (Белая "простыня" снизу) */
+.tabs-content {
+    -fx-background-color: white;
+    -fx-background-radius: 0 0 20px 20px; /* Скругляем только низ */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 1);
+}
+
+.label-header {
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-padding: 0 0 5px 0;
+}
+
+/* =========================================
+   СПИСОК (LIST VIEW) - Эффект линовки
+   ========================================= */
+.custom-list-view {
+    -fx-background-color: #EAEAEA; /* Серый фон внутри блока списка */
+    -fx-background-radius: 15px;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+}
+
+/* Ячейки списка */
+.custom-list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333;
+    -fx-border-color: #D1D1D1; /* Цвет линеек */
+    -fx-border-width: 0 0 1px 0; /* Линия только снизу */
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+}
+
+/* Убираем цвет выделения или делаем его мягким */
+.custom-list-view .list-cell:filled:selected,
+.custom-list-view .list-cell:filled:selected:hover {
+    -fx-background-color: rgba(18, 78, 197, 0.1);
+    -fx-text-fill: #124EC5;
+}
+
+/* Пустые ячейки (чтобы линии шли до конца) */
+.custom-list-view .list-cell:empty {
+    -fx-background-color: transparent;
+    -fx-border-color: #D1D1D1;
+    -fx-border-width: 0 0 1px 0;
+}
+
+/* Скрываем скроллбар если не нужен, или стилизуем (опционально) */
+.custom-list-view .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+/* =========================================
+   НИЖНИЕ КНОПКИ
+   ========================================= */
+.btn-primary {
+    -fx-background-color: #124EC5;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #0e3c9c;
+}
+
+.btn-primary:pressed {
+    -fx-background-color: #0a2a6e;
+}
+
+.btn-danger {
+    -fx-background-color: #E53935; /* Красный цвет */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px;
+    -fx-cursor: hand;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #C62828; /* Темно-красный при наведении */
+}
+
+.btn-danger:pressed {
+    -fx-background-color: #B71C1C; /* Очень темный при нажатии */
+}
+
+/* =========================================
+   ИКОНКИ (SVG)
+   ========================================= */
+
+/* Стиль для иконок внутри вкладок */
+.tab-icon {
+    -fx-fill: #757575; /* Цвет неактивной иконки (Серый) */
+    -fx-scale-x: 0.7;  /* Немного увеличим, если иконка мелкая */
+    -fx-scale-y: 0.7;
+}
+
+/* Стиль для иконки в активной вкладке */
+.tab-button:selected .tab-icon {
+    -fx-fill: #124EC5; /* Иконка становится СИНЕЙ автоматически */
+}
+
+/* Убираем старые эмодзи-цвета, теперь управляем SVG */
+.tab-button {
+    -fx-content-display: LEFT; /* Иконка слева от текста */
+    -fx-graphic-text-gap: 8px; /* Расстояние между иконкой и текстом */
+}
+
+/* Иконка настроек (всегда белая) */
+.icon-white {
+    -fx-fill: white;
+}
+
+/* Поправляем кнопку настроек, так как там теперь SVG, а не текст */
+.btn-settings {
+    -fx-alignment: CENTER; /* Центрируем иконку */
+    -fx-padding: 10px;     /* Подгоняем отступы, чтобы круг был ровным */
 }

@@ -1,111 +1,131 @@
 package com.wallet.gui;
 
+import com.wallet.service.WalletService;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent; // НОВЫЙ ИМПОРТ
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.text.Text;
-
-import java.math.BigDecimal;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleButton; // НОВЫЙ ИМПОРТ
+import javafx.scene.control.ToggleGroup; // НОВЫЙ ИМПОРТ
+import javafx.scene.layout.VBox; // НОВЫЙ ИМПОРТ
 
 public class MainController {
 
-    // ========== Элементы FXML для Скрытия Баланса ==========
-    // Эти ID должны совпадать с main_scene.fxml
+    // --- FXML ССЫЛКИ НА СТАРЫЕ ЭЛЕМЕНТЫ ---
     @FXML
-    private Label totalBalanceValue;
-    @FXML
-    private Button toggleBalanceButton;
+    private ListView<String> walletListView;
 
-    // ========== Элементы FXML, которые пока не используются ==========
     @FXML
-    private ListView accountListView;
-    @FXML
-    private TextField newAccountNameField;
-    @FXML
-    private TextField newAccountBalanceField;
-    @FXML
-    private Text statusText;
-    @FXML
-    private ChoiceBox operationTypeChoice;
-    @FXML
-    private ComboBox sourceAccountCombo;
-    @FXML
-    private ComboBox targetAccountCombo;
-    @FXML
-    private TextField amountField;
-    @FXML
-    private TextField descriptionField;
-    @FXML
-    private Text operationStatusText;
-    @FXML
-    private ComboBox historyAccountCombo;
-    @FXML
-    private TableView historyTableView;
-    // ==========================================================
+    private TableView<?> operationsTableView;
 
-    // Жестко заданное значение баланса для отображения
-    private final BigDecimal currentTotalBalance = new BigDecimal("182500.00");
-    private boolean isBalanceVisible = true;
-    private final String MASKED_BALANCE = "•••••• ₽";
+    // --- FXML ССЫЛКИ ДЛЯ КАСТОМНОГО ПЕРЕКЛЮЧАТЕЛЯ (КРИТИЧНО) ---
+    @FXML
+    private ToggleButton walletsTabButton;
+    @FXML
+    private ToggleButton operationsTabButton;
+    @FXML
+    private VBox walletsContent;
+    @FXML
+    private VBox operationsContent;
 
-    // ==========================================================
-    // МЕТОД ИНИЦИАЛИЗАЦИИ
-    // ==========================================================
 
+
+    private WalletService walletService;
+
+    public void setWalletService(WalletService walletService){
+        this.walletService = walletService;
+        loadIn
+    }
+
+    /**
+     * Вызывается после того, как все элементы FXML загружены.
+     */
     @FXML
     public void initialize() {
-        // Устанавливаем начальное значение баланса при старте
-        updateTotalBalanceDisplay();
+        System.out.println("Controller initialized successfully.");
 
-        // ВНИМАНИЕ: Здесь должна быть вся остальная (сейчас отключенная) инициализация.
+        // --- ЛОГИКА КАСТОМНОГО ПЕРЕКЛЮЧАТЕЛЯ (Инициализация ToggleGroup) ---
+        ToggleGroup group = new ToggleGroup();
+        walletsTabButton.setToggleGroup(group);
+        operationsTabButton.setToggleGroup(group);
+
+        // Гарантируем, что всегда выбрана хотя бы одна кнопка (чтобы не было пустого экрана)
+        group.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null && oldValue != null) {
+                ((ToggleButton) oldValue).setSelected(true);
+            }
+        });
+
+        // --- Заполнение ListView тестовыми данными ---
+        ObservableList<String> walletItems = FXCollections.observableArrayList(
+                "Кошелек для наличных (0 ₽)",
+                "Счет в банке Сбер (12 500 ₽)",
+                "Криптокошелек (5 000 ₽)"
+        );
+        walletListView.setItems(walletItems);
     }
 
-    // ==========================================================
-    // ЛОГИКА Скрытия/Показа Баланса
-    // ==========================================================
+    // --- Действия для кастомного переключателя (ВЫЗЫВАЕТСЯ ИЗ FXML) ---
 
-    /**
-     * Метод, привязанный к кнопке (onAction="#handleToggleBalanceVisibility")
-     */
     @FXML
-    private void handleToggleBalanceVisibility() {
-        isBalanceVisible = !isBalanceVisible;
-        updateTotalBalanceDisplay();
-    }
-
-    /**
-     * Обновляет отображение общего баланса
-     */
-    private void updateTotalBalanceDisplay() {
-        if (isBalanceVisible) {
-            // Форматируем реальное значение (182 500.00 ₽)
-            totalBalanceValue.setText(
-                    String.format("%,.2f ₽", currentTotalBalance)
-            );
-            toggleBalanceButton.setText("👁️");
-        } else {
-            // Показываем маску
-            totalBalanceValue.setText(MASKED_BALANCE);
-            toggleBalanceButton.setText("✖️");
+    private void handleTabSwitch(ActionEvent event) {
+        if (walletsTabButton.isSelected()) {
+            // Показываем контент Счетов
+            walletsContent.setVisible(true);
+            operationsContent.setVisible(false);
+            System.out.println("Switched to: Wallets");
+        } else if (operationsTabButton.isSelected()) {
+            // Показываем контент Операций
+            walletsContent.setVisible(false);
+            operationsContent.setVisible(true);
+            System.out.println("Switched to: Operations");
         }
     }
 
-    // ==========================================================
-    // ЗАГЛУШКИ ДЛЯ ОБРАБОТЧИКОВ (ОСТАВЬТЕ ИХ ПУСТЫМИ)
-    // ==========================================================
+    // --- Действия для кнопок (Button Actions) ---
 
     @FXML
-    private void handleCreateAccount() {
+    public void handleNewOperation() {
+        showAlert("Новая операция", "Открыто диалоговое окно для создания операции.");
     }
 
     @FXML
-    private void handleDeleteAccount() {
+    public void showSettings() {
+        showAlert("Настройки", "Открыто окно настроек.");
     }
 
     @FXML
-    private void handleExecuteOperation() {
+    public void addBankAccount() {
+        showAlert("Добавить счет", "Открыто диалоговое окно для добавления счета.");
     }
 
     @FXML
-    private void handleShowHistory() {
+    public void handleDeleteAccount() {
+        showAlert("Удалить счет", "Вызов процедуры удаления выбранного счета.");
     }
+
+    @FXML
+    public void createNewWallet() {
+        showAlert("Новый кошелек", "Открыто диалоговое окно для создания нового кошелька.");
+    }
+
+    // --- Вспомогательный метод ---
+
+    /**
+     * Показывает простое информационное окно Alert.
+     */
+    private void showAlert(String title, String content) {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Действие");
+        alert.setHeaderText(title);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    // Удалены старые методы showWallets, showOperations, showBudgets,
+    // так как они заменены handleTabSwitch.
 }
