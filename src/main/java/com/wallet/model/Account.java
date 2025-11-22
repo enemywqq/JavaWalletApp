@@ -27,8 +27,15 @@ public class Account {
         this.id = UUID.randomUUID().toString();
         historyOperation = new ArrayList<>();
 
+
     }
 
+
+    @Override
+    public String toString() {
+        // Теперь ChoiceBox будет показывать только имя счета (name)
+        return this.name;
+    }
 
     public void withdraw(BigDecimal amount) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
@@ -67,5 +74,6 @@ public class Account {
     public List<Operation> getHistory() {
         return historyOperation;
     }
+
 
 }

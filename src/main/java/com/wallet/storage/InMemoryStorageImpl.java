@@ -9,7 +9,7 @@ import java.util.*;
 public class InMemoryStorageImpl implements Storage {
 
     private final Map<String, Account> accounts = new HashMap<>();
-    private final List<Operation> operations = new ArrayList<>();
+    private final Map<String, Operation> operations = new HashMap<>();
 
 
     @Override
@@ -24,7 +24,7 @@ public class InMemoryStorageImpl implements Storage {
 
     @Override
     public void addOperation(Operation operation) {
-        operations.add(operation);
+        operations.put(operation.getId(), operation);
     }
 
     @Override
@@ -35,31 +35,24 @@ public class InMemoryStorageImpl implements Storage {
     @Override
     public List<Operation> findAllOperations() {
 
-        return new ArrayList<>(operations);
+        return new ArrayList<>(operations.values());
     }
 
-//    @Override
-//    public List<Operation> findAllOperations() {
-//        List<Operation> result = new ArrayList<>();
-//        for ( Operation operation : operations){
-//            result.add(operation);
-//        }
-//        return result;
-//
-//    }
+    @Override
+    public Operation findOperationById(String operationId){
+        return operations.get(operationId);
+    }
 
-//    @Override
-//    public Optional<Account> findAccountById(String accountId){
-//        return Optional.ofNullable(accounts.get(accountId));
-//    }
 
     @Override
     public Account findAccountById(String accountId) {
-        if (accounts.get(accountId) != null) {
-            return accounts.get(accountId);
-        }
-        throw new EntityNotFoundException("Аккаунт не найден");
+        return accounts.get(accountId);
+    }
 
+    @Override
+    public void deleteAllData() {
+        accounts.clear();
+        operations.clear();
     }
 
 }

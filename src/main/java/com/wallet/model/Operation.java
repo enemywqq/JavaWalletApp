@@ -12,9 +12,10 @@ public abstract class Operation {
     private final BigDecimal amount;
     private final String category;
     private final Account account;
+    private final String name;
 
 
-    public Operation(Account account, BigDecimal amount, String operationCategory) {
+    public Operation(Account account, BigDecimal amount, String operationCategory, String name) {
         if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new ValidationException("Сумма операции не может быть отрицательной или равна нулю");
         }
@@ -23,6 +24,7 @@ public abstract class Operation {
         this.timestamp = LocalDateTime.now();
         this.id = UUID.randomUUID().toString();
         this.account = account;
+        this.name = name;
 
     }
 
@@ -47,5 +49,9 @@ public abstract class Operation {
 
     public Account getAccount() {
         return account;
+    }
+
+    public String getName(){
+        return name;
     }
 }

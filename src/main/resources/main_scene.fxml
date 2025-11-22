@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane fx:id="rootPane" styleClass="main-background" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.wallet.gui.MainController">
+
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20"/>
+    </padding>
+
+    <center>
+        <VBox spacing="20" maxWidth="400">
+            <HBox alignment="CENTER_LEFT" styleClass="card-top">
+                <padding>
+                    <Insets bottom="20" left="20" right="20" top="20"/>
+                </padding>
+
+                <VBox spacing="2" HBox.hgrow="ALWAYS">
+                    <Label styleClass="label-gray" text="Общий баланс"/>
+                    <Label fx:id="totalBalanceLabel" styleClass="label-balance" text="0,00 ₽"/>
+                </VBox>
+
+                <Button onAction="#showSettings" styleClass="btn-settings">
+                    <graphic>
+                        <SVGPath content="M12 1L21.5 6.5V17.5L12 23L2.5 17.5V6.5L12 1ZM12 15C12.7956 15 13.5587 14.6839 14.1213 14.1213C14.6839 13.5587 15 12.7956 15 12C15 11.2044 14.6839 10.4413 14.1213 9.87868C13.5587 9.31607 12.7956 9 12 9C11.2044 9 10.4413 9.31607 9.87868 9.87868C9.31607 10.4413 9 11.2044 9 12C9 12.7956 9.31607 13.5587 9.87868 14.1213C10.4413 14.6839 11.2044 15 12 15Z"
+                                 styleClass="icon-white" scaleX="0.9" scaleY="0.9"/>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <VBox VBox.vgrow="ALWAYS">
+
+                <HBox styleClass="tabs-header">
+                    <fx:define>
+                        <ToggleGroup fx:id="tabGroup"/>
+                    </fx:define>
+
+                    <ToggleButton fx:id="walletsTabButton" text="Счета" toggleGroup="$tabGroup" selected="true"
+                                  onAction="#handleTabSwitch" styleClass="tab-button" maxWidth="Infinity" HBox.hgrow="ALWAYS">
+                        <graphic>
+                            <SVGPath content="M20.9678 1.81836C21.0855 1.79485 21.2068 1.79814 21.3232 1.82715C21.4397 1.85621 21.5487 1.91032 21.6416 1.98633C21.7346 2.06254 21.8099 2.15892 21.8613 2.26758C21.9128 2.37625 21.9395 2.49501 21.9395 2.61523V5.28027H6.49902V6.49902H23.5391C23.7546 6.49902 23.9609 6.58493 24.1133 6.7373C24.2656 6.88968 24.3516 7.09605 24.3516 7.31152V21.9365C24.3515 22.152 24.2656 22.3584 24.1133 22.5107C23.9609 22.6631 23.7545 22.749 23.5391 22.749H2.41406C2.19859 22.749 1.99221 22.6631 1.83984 22.5107C1.68748 22.3584 1.60158 22.152 1.60156 21.9365V13.1719L1.58984 13.1777V5.89062C1.58984 5.42184 1.75246 5.1285 2.04102 4.97852C2.1153 4.9368 2.19604 4.90642 2.28027 4.88965L20.9678 1.81836ZM19.3115 13.123C19.0146 13.0001 18.6873 12.9676 18.3721 13.0303C18.057 13.093 17.7672 13.2474 17.54 13.4746C17.3129 13.7018 17.1584 13.9916 17.0957 14.3066C17.033 14.6219 17.0655 14.9492 17.1885 15.2461C17.3115 15.5429 17.52 15.7971 17.7871 15.9756C18.0542 16.1539 18.3683 16.249 18.6895 16.249C19.1204 16.249 19.5341 16.0782 19.8389 15.7734C20.1436 15.4687 20.3144 15.055 20.3145 14.624C20.3145 14.3026 20.2196 13.9879 20.041 13.7207C19.8625 13.4536 19.6083 13.246 19.3115 13.123Z" styleClass="tab-icon"/>
+                        </graphic>
+                    </ToggleButton>
+
+                    <ToggleButton fx:id="operationsTabButton" text="Операции" toggleGroup="$tabGroup"
+                                  onAction="#handleTabSwitch" styleClass="tab-button" maxWidth="Infinity" HBox.hgrow="ALWAYS">
+                        <graphic>
+                            <SVGPath content="M13 22.75C10.5083 22.75 8.33733 21.9241 6.487 20.2724C4.63667 18.6207 3.57572 16.5577 3.30417 14.0833H5.525C5.77778 15.9611 6.61303 17.5139 8.03075 18.7417C9.44847 19.9694 11.1049 20.5833 13 20.5833C15.1125 20.5833 16.9047 19.8477 18.3766 18.3766C19.8485 16.9054 20.5841 15.1132 20.5833 13C20.5826 10.8868 19.847 9.09494 18.3766 7.6245C16.9061 6.15406 15.1139 5.41811 13 5.41667C11.7542 5.41667 10.5896 5.70556 9.50625 6.28333C8.42292 6.86111 7.51111 7.65556 6.77083 8.66667H9.75V10.8333H3.25V4.33333H5.41667V6.87917C6.3375 5.72361 7.46164 4.82986 8.78908 4.19792C10.1165 3.56597 11.5202 3.25 13 3.25C14.3542 3.25 15.6227 3.50747 16.8057 4.02242C17.9888 4.53736 19.0179 5.23214 19.8933 6.10675C20.7686 6.98136 21.4637 8.01053 21.9787 9.19425C22.4936 10.378 22.7507 11.6466 22.75 13C22.7493 14.3534 22.4922 15.622 21.9787 16.8057C21.4652 17.9895 20.77 19.0186 19.8933 19.8932C19.0165 20.7679 17.9873 21.463 16.8057 21.9787C15.6242 22.4943 14.3556 22.7514 13 22.75ZM16.0333 17.55L11.9167 13.4333V7.58333H14.0833V12.5667L17.55 16.0333L16.0333 17.55Z" styleClass="tab-icon"/>
+                        </graphic>
+                    </ToggleButton>
+                </HBox>
+
+                <StackPane styleClass="tabs-content" VBox.vgrow="ALWAYS">
+
+                    <VBox fx:id="walletsContent" spacing="15">
+                        <padding><Insets bottom="20" left="20" right="20" top="20"/></padding>
+                        <Label styleClass="label-header" text="Список всех счетов"/>
+                        <ListView fx:id="walletListView" styleClass="custom-list-view" VBox.vgrow="ALWAYS"/>
+                        <HBox spacing="12">
+                            <Button maxWidth="Infinity" onAction="#addBankAccount" styleClass="btn-primary" text="+ Добавить счет" HBox.hgrow="ALWAYS"/>
+                            <Button onAction="#handleDeleteAccount" styleClass="btn-danger">
+                                <graphic>
+                                    <SVGPath content="M19 4H15.5L14.5 3H9.5L8.5 4H5V6H19M6 19C6 19.5304 6.21071 20.0391 6.58579 20.4142C6.96086 20.7893 7.46957 21 8 21H16C16.5304 21 17.0391 20.7893 17.4142 20.4142C17.7893 20.0391 18 19.5304 18 19V7H6V19Z" styleClass="icon-white" scaleX="0.9" scaleY="0.9"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                    </VBox>
+
+                    <VBox fx:id="operationsContent" visible="false" spacing="15">
+                        <padding><Insets bottom="20" left="20" right="20" top="20"/></padding>
+
+                        <HBox spacing="12">
+                            <VBox styleClass="spending-card">
+                                <Label fx:id="totalExpenseBalanceLabel" text="0 ₽" styleClass="spending-amount"/>
+                                <Label text="Траты" styleClass="spending-label"/>
+                            </VBox>
+                            <VBox styleClass="spending-card">
+                                <Label fx:id="totalIncomeBalanceLabel" text="0 ₽" styleClass="spending-amount"/>
+                                <Label text="Доходы" styleClass="spending-label"/>
+                            </VBox>
+                        </HBox>
+
+                        <StackPane>
+                            <TextField fx:id="searchField" promptText="Поиск" styleClass="search-field" StackPane.alignment="CENTER_LEFT"/>
+                            <SVGPath content="M19.6 21L13.3 14.7C12.8 15.1 12.225 15.4167 11.575 15.65C10.925 15.8833 10.2333 16 9.5 16C7.68333 16 6.146 15.3707 4.888 14.112C3.63 12.8533 3.00067 11.316 3 9.5C2.99933 7.684 3.62867 6.14667 4.888 4.888C6.14733 3.62933 7.68467 3 9.5 3C11.3153 3 12.853 3.62933 14.113 4.888C15.373 6.14667 16.002 7.684 16 9.5C16 10.2333 15.8833 10.925 15.65 11.575C15.4167 12.225 15.1 12.8 14.7 13.3L21 19.6L19.6 21ZM9.5 14C10.75 14 11.8127 13.5627 12.688 12.688C13.5633 11.8133 14.0007 10.7507 14 9.5C13.9993 8.24933 13.562 7.187 12.688 6.313C11.814 5.439 10.7513 5.00133 9.5 5C8.24867 4.99867 7.18633 5.43633 6.313 6.313C5.43967 7.18967 5.002 8.252 5 9.5C4.998 10.748 5.43567 11.8107 6.313 12.688C7.19033 13.5653 8.25267 14.0027 9.5 14Z"
+                                     styleClass="search-icon" StackPane.alignment="CENTER_LEFT">
+                                <StackPane.margin>
+                                    <Insets left="10"/>
+                                </StackPane.margin>
+                            </SVGPath>
+                        </StackPane>
+
+                        <HBox spacing="12" alignment="CENTER_LEFT" maxWidth="Infinity">
+                            <Button text="Дата" styleClass="filter-btn-active" HBox.hgrow="ALWAYS"/>
+                            <ToggleButton fx:id="noTransfersToggle" text="Без переводов" styleClass="filter-toggle" HBox.hgrow="ALWAYS"/>
+                        </HBox>
+
+                        <ListView fx:id="operationsListView" styleClass="operations-list-view" VBox.vgrow="ALWAYS"/>
+
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Button maxWidth="Infinity" text="+ Добавить операцию" styleClass="btn-primary" onAction="#addOperation" HBox.hgrow="ALWAYS"/>
+                        </HBox>
+                    </VBox>
+                </StackPane>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

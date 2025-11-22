@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 
 public class Expense extends Operation {
 
-    public Expense(Account account, BigDecimal amount, String category) {
-        super(account, amount, category);
+    public Expense(Account account, BigDecimal amount, String category, String nameOperation) {
+        super(account, amount, category, nameOperation);
     }
 
     @Override

@@ -6,7 +6,9 @@ import com.wallet.model.*;
 import com.wallet.storage.Storage;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WalletServiceImpl implements WalletService {
 
@@ -19,10 +21,38 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public Account createAccount(String name, BigDecimal initialBalance) {
+    public List<Operation> filterBySearch(List<Operation> operations, String searchText){
+        if (searchText == null || searchText.trim().isEmpty()){
+            return operations;
+        }
+
+        final String searchLower = searchText.toLowerCase();
+        return operations.stream()
+                .filter(operation -> operation.getName().toLowerCase().contains(searchLower))
+                .collect(Collectors.toList());
+
+    }
+
+    public List<Operation> filterOutTransfers(List<Operation> operations){
+        return operations.stream()
+                .filter(operation -> !(operation instanceof Transfer))
+                .collect(Collectors.toList());
+
+
+    }
+
+//    public List<Operation> sortByDateDescending(List<Operation> operations){
+//        return operations.stream()
+//                .sorted(Comparator.comparing())
+//
+//    }
+//
+//    public List<Operation> sortByDateAscending(List<Operation> operations);
+
+    @Override
+    public void createAccount(String name, BigDecimal initialBalance) {
         Account newAccount = new Account(name, initialBalance);
         storage.save(newAccount);
-        return newAccount;
     }
 
     @Override
@@ -45,28 +75,46 @@ public class WalletServiceImpl implements WalletService {
         storage.delete(account.getId());
     }
 
+
     @Override
-    public void makeIncome(String accountId, BigDecimal amount, String category) {
+    public void makeIncome(String accountId, BigDecimal amount, String category, String nameOperation) {
         Account account = storage.findAccountById(accountId);
-        Income newIncome = new Income(account, amount, category);
-        newIncome.execute();
-        storage.addOperation(newIncome);
-        storage.save(account);
+        Income newIncome = new Income(account, amount, category, nameOperation);
+
+        boolean executedSuccessfully = false;
+
+        try {
+            newIncome.execute();
+            executedSuccessfully = true;
+            storage.addOperation(newIncome);
+            storage.save(account);
+        } catch (Exception e){
+            if (executedSuccessfully){
+                account.withdraw(amount);
+            }
+        }
+
     }
 
     @Override
-    public void makeExpense(String accountId, BigDecimal amount, String category){
+    public void makeExpense(String accountId, BigDecimal amount, String category, String nameOperation){
         Account account = storage.findAccountById(accountId);
-        Expense newExpense = new Expense(account, amount, category);
+        Expense newExpense = new Expense(account, amount, category, nameOperation);
         newExpense.execute();
-        storage.addOperation(newExpense);
-        storage.save(account);
+
+        try {
+            storage.addOperation(newExpense);
+            storage.save(account);
+        } catch (Exception e){
+            account.deposit(amount);
+        }
+
 
     }
 
 
     @Override
-    public void makeTransfer(String sourceAccountId, String destinationAccountId, BigDecimal amount, String category){
+    public void makeTransfer(String sourceAccountId, String destinationAccountId, BigDecimal amount, String category, String nameOperation){
 
         if (sourceAccountId.equals(destinationAccountId)){
             throw new ValidationException("Нельзя переводить средства на тот же счет.");
@@ -75,11 +123,19 @@ public class WalletServiceImpl implements WalletService {
         Account destinationAccount = storage.findAccountById(destinationAccountId);
 
 
-        Transfer newTransfer = new Transfer(sourceAccount, destinationAccount, amount, category);
+        Transfer newTransfer = new Transfer(sourceAccount, destinationAccount, amount, category, nameOperation);
         newTransfer.execute();
-        storage.addOperation(newTransfer);
-        storage.save(sourceAccount);
-        storage.save(destinationAccount);
+
+        try{
+            storage.addOperation(newTransfer);
+            storage.save(sourceAccount);
+            storage.save(destinationAccount);
+
+        } catch (Exception e){
+            sourceAccount.deposit(amount);
+            destinationAccount.withdraw(amount);
+        }
+
     }
 
     @Override
@@ -98,6 +154,42 @@ public class WalletServiceImpl implements WalletService {
         }
         return result;
     }
+
+    public BigDecimal getTotalIncomeBalance(){
+        List<Operation> allOperations = showListOperations();
+        BigDecimal totalIncome = BigDecimal.ZERO;
+
+        for (Operation operation : allOperations){
+            if (operation instanceof Income){
+                totalIncome = totalIncome.add(operation.getAmount());
+            }
+        }
+        return totalIncome;
+
+
+    }
+
+    public BigDecimal getTotalExpenseBalance(){
+        List<Operation> allOperations = showListOperations();
+        BigDecimal totalExpense = BigDecimal.ZERO;
+
+        for (Operation operation : allOperations){
+            if (operation instanceof Expense){
+                totalExpense = totalExpense.add(operation.getAmount());
+            }
+        }
+        return totalExpense;
+
+
+    }
+
+    @Override
+    public void clearAllData() {
+        storage.deleteAllData();
+    }
+
+
+
 
 
 

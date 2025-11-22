@@ -18,6 +18,10 @@ public interface Storage {
 
     Account findAccountById(String accountId);
 
+    Operation findOperationById(String operationId);
+
     List<Operation> findAllOperations();
+
+    void deleteAllData();
 
 }

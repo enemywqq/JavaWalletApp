@@ -31,23 +31,37 @@ public interface WalletService {
     //Просмотр истории операций.
 
 
+    public List<Operation> filterBySearch(List<Operation> operations, String searchText);
+
+    public List<Operation> filterOutTransfers(List<Operation> operations);
+
+//    public List<Operation> sortByDateDescending(List<Operation> operations);
+//
+//    public List<Operation> sortByDateAscending(List<Operation> operations);
+
+    public BigDecimal getTotalIncomeBalance();
+
+    public BigDecimal getTotalExpenseBalance();
+
     public BigDecimal geTotalBalance();
 
     public BigDecimal showBalance(String id);
 
-    public Account createAccount(String name, BigDecimal initialBalance);
+    public void createAccount(String name, BigDecimal initialBalance);
 
     public List<Account> showListAccounts();
 
     public void deleteAccount(String id);
 
-    public void makeIncome(String id, BigDecimal amount, String category);
+    public void makeIncome(String id, BigDecimal amount, String category, String nameOperation);
 
-    public void makeExpense(String id, BigDecimal amount, String category);
+    public void makeExpense(String id, BigDecimal amount, String category, String nameOperation);
 
-    public void makeTransfer(String sourceAccountId, String destinationAccountId, BigDecimal amount, String category);
+    public void makeTransfer(String sourceAccountId, String destinationAccountId, BigDecimal amount, String category, String nameOperation);
 
     public List<Operation> showListOperations();
+
+    public void clearAllData();
 
 
 }
