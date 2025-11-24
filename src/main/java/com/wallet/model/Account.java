@@ -2,19 +2,18 @@ package com.wallet.model;
 
 import java.util.UUID;
 
-import com.wallet.exceptions.InsufficientBalanceException;
+import com.wallet.exceptions.validation.InsufficientBalanceException;
 import com.wallet.exceptions.ValidationException;
 
 import java.math.BigDecimal;
-import java.nio.channels.AcceptPendingException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Account {
 
     private final String id;
-    private String name;
-    private List<Operation> historyOperation;
+    private final String name;
+    private final List<Operation> historyOperation;
     private BigDecimal balance;
 
 
@@ -33,7 +32,6 @@ public class Account {
 
     @Override
     public String toString() {
-        // Теперь ChoiceBox будет показывать только имя счета (name)
         return this.name;
     }
 
@@ -42,7 +40,7 @@ public class Account {
             throw new ValidationException("Сумма вывода должна быть строго положительной");
         }
         if (amount.compareTo(balance) == 1) {
-            throw new InsufficientBalanceException("Недостаточно средств на счете");
+            throw new InsufficientBalanceException();
         }
         balance = this.balance.subtract(amount);
 

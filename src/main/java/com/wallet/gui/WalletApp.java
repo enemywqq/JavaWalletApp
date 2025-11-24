@@ -1,6 +1,5 @@
 package com.wallet.gui;
 
-import com.wallet.gui.MainController;
 import com.wallet.service.WalletService;
 import com.wallet.service.WalletServiceImpl;
 import com.wallet.storage.InMemoryStorageImpl;
@@ -17,13 +16,13 @@ public class WalletApp extends Application {
         Storage storage = new InMemoryStorageImpl();
         WalletService walletService = new WalletServiceImpl(storage);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/main_scene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/wallet/gui/main_scene.fxml"));
 
 
         loader.setControllerFactory(param -> new MainController(walletService));
 
         Scene scene = new Scene(loader.load());
-        stage.setTitle("Wallet App");
+        stage.setTitle("Money flow xdd");
         stage.setScene(scene);
         stage.show();
     }

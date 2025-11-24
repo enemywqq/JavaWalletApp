@@ -9,59 +9,35 @@ import java.util.List;
 public interface WalletService {
 
 
-    //Управление счетами:
-    //
-    //Создание счета.
-    //
-    //Просмотр списка счетов.
-    //
-    //Просмотр баланса.
-    //
-    //Удаление счета.
-    //
-    //
-    //Финансовые операции:
-    //
-    //Доход.
-    //
-    //Расход.
-    //
-    //Перевод.
-    //
-    //Просмотр истории операций.
+    List<Operation> filterBySearch(List<Operation> operations, String searchText);
 
+    List<Operation> filterOutTransfers(List<Operation> operations);
 
-    public List<Operation> filterBySearch(List<Operation> operations, String searchText);
-
-    public List<Operation> filterOutTransfers(List<Operation> operations);
-
-//    public List<Operation> sortByDateDescending(List<Operation> operations);
+//     List<Operation> sortByDateDescending(List<Operation> operations);
 //
-//    public List<Operation> sortByDateAscending(List<Operation> operations);
+//     List<Operation> sortByDateAscending(List<Operation> operations);
 
-    public BigDecimal getTotalIncomeBalance();
+    BigDecimal getTotalIncomeBalance();
 
-    public BigDecimal getTotalExpenseBalance();
+    BigDecimal getTotalExpenseBalance();
 
-    public BigDecimal geTotalBalance();
+    BigDecimal getTotalBalance();
 
-    public BigDecimal showBalance(String id);
+    void createAccount(String name, BigDecimal initialBalance);
 
-    public void createAccount(String name, BigDecimal initialBalance);
+    List<Account> showListAccounts();
 
-    public List<Account> showListAccounts();
+    void deleteAccount(String id);
 
-    public void deleteAccount(String id);
+    void makeIncome(String id, BigDecimal amount, String category, String nameOperation);
 
-    public void makeIncome(String id, BigDecimal amount, String category, String nameOperation);
+    void makeExpense(String id, BigDecimal amount, String category, String nameOperation);
 
-    public void makeExpense(String id, BigDecimal amount, String category, String nameOperation);
+    void makeTransfer(String sourceAccountId, String destinationAccountId, BigDecimal amount, String category, String nameOperation);
 
-    public void makeTransfer(String sourceAccountId, String destinationAccountId, BigDecimal amount, String category, String nameOperation);
+    List<Operation> showListOperations();
 
-    public List<Operation> showListOperations();
-
-    public void clearAllData();
+    void clearAllData();
 
 
 }

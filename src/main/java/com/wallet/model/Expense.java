@@ -1,7 +1,5 @@
 package com.wallet.model;
 
-import com.wallet.exceptions.InsufficientBalanceException;
-
 import java.math.BigDecimal;
 
 public class Expense extends Operation {

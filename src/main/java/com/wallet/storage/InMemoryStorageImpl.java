@@ -1,6 +1,5 @@
 package com.wallet.storage;
 
-import com.wallet.exceptions.EntityNotFoundException;
 import com.wallet.model.Account;
 import com.wallet.model.Operation;
 
@@ -39,7 +38,7 @@ public class InMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public Operation findOperationById(String operationId){
+    public Operation findOperationById(String operationId) {
         return operations.get(operationId);
     }
 

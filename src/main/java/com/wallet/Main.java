@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 
 public class Main {
     public static void main(String[] args) {
-        // Для запуска JavaFX приложения используется статический метод launch
         Application.launch(WalletApp.class, args);
     }
 }

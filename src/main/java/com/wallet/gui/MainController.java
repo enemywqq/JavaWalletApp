@@ -1,7 +1,10 @@
 package com.wallet.gui;
 
-import com.wallet.exceptions.AccountNotSelectedException;
+import com.wallet.exceptions.BusinessLogicException;
 import com.wallet.exceptions.ValidationException;
+import com.wallet.exceptions.data.TransactionFailureException; // <-- НОВЫЙ ИМПОРТ
+import com.wallet.exceptions.logic.AccountNotSelectedException;
+import com.wallet.exceptions.validation.SelfTransferException;
 import com.wallet.model.*;
 import com.wallet.service.WalletService;
 import javafx.collections.FXCollections;
@@ -24,21 +27,32 @@ import java.util.TreeMap;
 
 public class MainController {
 
-    @FXML private Label totalExpenseBalanceLabel;
-    @FXML private Label totalIncomeBalanceLabel;
-    @FXML private Label totalBalanceLabel;
+    @FXML
+    private Label totalExpenseBalanceLabel;
+    @FXML
+    private Label totalIncomeBalanceLabel;
+    @FXML
+    private Label totalBalanceLabel;
 
-    @FXML private ListView<Account> walletListView;
-    @FXML private ListView<Object> operationsListView;
+    @FXML
+    private ListView<Account> walletListView;
+    @FXML
+    private ListView<Object> operationsListView;
 
-    @FXML private VBox walletsContent;
-    @FXML private VBox operationsContent;
+    @FXML
+    private VBox walletsContent;
+    @FXML
+    private VBox operationsContent;
 
-    @FXML private ToggleButton walletsTabButton;
-    @FXML private ToggleButton operationsTabButton;
+    @FXML
+    private ToggleButton walletsTabButton;
+    @FXML
+    private ToggleButton operationsTabButton;
 
-    @FXML private TextField searchField;
-    @FXML private ToggleButton noTransfersToggle;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ToggleButton noTransfersToggle;
 
     private final WalletService walletService;
     private final DecimalFormat currencyFormat = new DecimalFormat("#,##0.00 ₽");
@@ -46,7 +60,10 @@ public class MainController {
 
     private static class DateHeader {
         LocalDate date;
-        public DateHeader(LocalDate date) { this.date = date; }
+
+        public DateHeader(LocalDate date) {
+            this.date = date;
+        }
     }
 
     public MainController(WalletService walletService) {
@@ -105,8 +122,7 @@ public class MainController {
                     root.setAlignment(Pos.CENTER);
                     setGraphic(root);
                     setMouseTransparent(true);
-                }
-                else if (item instanceof Operation) {
+                } else if (item instanceof Operation) {
                     renderOperation((Operation) item);
                     setMouseTransparent(false);
                 }
@@ -190,23 +206,30 @@ public class MainController {
         if (searchField != null && !searchField.getText().trim().isEmpty()) {
             allOps = walletService.filterBySearch(allOps, searchField.getText().trim());
         }
+
         Map<LocalDate, List<Operation>> grouped = new TreeMap<>((d1, d2) -> d2.compareTo(d1));
         for (Operation op : allOps) {
             LocalDate date = op.getTimestamp().toLocalDate();
             grouped.computeIfAbsent(date, k -> new ArrayList<>()).add(op);
         }
+
         List<Object> flatList = new ArrayList<>();
         for (Map.Entry<LocalDate, List<Operation>> entry : grouped.entrySet()) {
+
+            List<Operation> dailyOps = entry.getValue();
+            dailyOps.sort((o1, o2) -> o2.getTimestamp().compareTo(o1.getTimestamp()));
+
             flatList.add(new DateHeader(entry.getKey()));
-            flatList.addAll(entry.getValue());
+            flatList.addAll(dailyOps);
         }
         operationsListView.setItems(FXCollections.observableArrayList(flatList));
     }
 
+
     private void updateUI() {
         walletListView.getItems().setAll(walletService.showListAccounts());
         refreshOperationsList();
-        totalBalanceLabel.setText(currencyFormat.format(walletService.geTotalBalance()));
+        totalBalanceLabel.setText(currencyFormat.format(walletService.getTotalBalance()));
         totalIncomeBalanceLabel.setText(currencyFormat.format(walletService.getTotalIncomeBalance()));
         totalExpenseBalanceLabel.setText(currencyFormat.format(walletService.getTotalExpenseBalance()));
     }
@@ -217,19 +240,23 @@ public class MainController {
         dialog.setTitle("Новая операция");
         dialog.setHeaderText("Заполните детали");
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-        applyDialogStyles(dialog); // БЕЗОПАСНЫЙ ВЫЗОВ
+        applyDialogStyles(dialog);
 
         GridPane grid = new GridPane();
-        grid.setHgap(10); grid.setVgap(10);
+        grid.setHgap(10);
+        grid.setVgap(10);
         grid.setPadding(new Insets(20, 10, 10, 10));
 
         ChoiceBox<String> typeChoice = new ChoiceBox<>(FXCollections.observableArrayList("Расход", "Доход", "Перевод"));
         typeChoice.getSelectionModel().selectFirst();
         typeChoice.setMaxWidth(Double.MAX_VALUE);
 
-        TextField descField = new TextField(); descField.setPromptText("Например: Продукты");
-        TextField amountField = new TextField(); amountField.setPromptText("0.00");
-        TextField catField = new TextField(); catField.setPromptText("Категория");
+        TextField descField = new TextField();
+        descField.setPromptText("Например, Ozon");
+        TextField amountField = new TextField();
+        amountField.setPromptText("0.00");
+        TextField catField = new TextField();
+        catField.setPromptText("Например, Такси");
 
         ChoiceBox<Account> sourceChoice = new ChoiceBox<>(FXCollections.observableArrayList(walletService.showListAccounts()));
         sourceChoice.setMaxWidth(Double.MAX_VALUE);
@@ -247,9 +274,10 @@ public class MainController {
         grid.addRow(2, targetLabel, targetChoice);
         grid.addRow(3, new Label("Сумма:"), amountField);
         grid.addRow(4, new Label("Категория:"), catField);
-        grid.addRow(5, new Label("Описание:"), descField);
+        grid.addRow(5, new Label("Название:"), descField);
 
-        ColumnConstraints c = new ColumnConstraints(); c.setHgrow(Priority.ALWAYS);
+        ColumnConstraints c = new ColumnConstraints();
+        c.setHgrow(Priority.ALWAYS);
         grid.getColumnConstraints().addAll(new ColumnConstraints(), c);
         dialog.getDialogPane().setContent(grid);
 
@@ -260,43 +288,59 @@ public class MainController {
                     if (amountStr.isEmpty()) throw new ValidationException("Введите сумму");
                     BigDecimal amount = new BigDecimal(amountStr);
                     Account sourceAcc = sourceChoice.getValue();
-                    if (sourceAcc == null) throw new ValidationException("Выберите счет");
+                    if (sourceAcc == null) throw new AccountNotSelectedException("Выберите счет отправителя");
 
                     String opType = typeChoice.getValue();
-                    if ("Доход".equals(opType)) walletService.makeIncome(sourceAcc.getId(), amount, catField.getText(), descField.getText());
-                    else if ("Расход".equals(opType)) walletService.makeExpense(sourceAcc.getId(), amount, catField.getText(), descField.getText());
+                    if ("Доход".equals(opType))
+                        walletService.makeIncome(sourceAcc.getId(), amount, catField.getText(), descField.getText());
+                    else if ("Расход".equals(opType))
+                        walletService.makeExpense(sourceAcc.getId(), amount, catField.getText(), descField.getText());
                     else if ("Перевод".equals(opType)) {
                         Account target = targetChoice.getValue();
-                        if (target == null) throw new ValidationException("Выберите получателя");
-                        if (sourceAcc.getId().equals(target.getId())) throw new ValidationException("Счета должны быть разными");
+
+                        if (target == null) throw new AccountNotSelectedException("Выберите счет получателя");
+                        if (sourceAcc.getId().equals(target.getId())) throw new SelfTransferException();
+
                         walletService.makeTransfer(sourceAcc.getId(), target.getId(), amount, catField.getText(), descField.getText());
                     }
                     updateUI();
+
+                } catch (ValidationException e) {
+                    showAlert("Ошибка валидации", e.getMessage(), Alert.AlertType.WARNING);
+                } catch (BusinessLogicException e) {
+                    showAlert("Ошибка операции", e.getMessage(), Alert.AlertType.WARNING);
+                } catch (NumberFormatException e) {
+                    showAlert("Ошибка ввода", "Неверный формат суммы. Используйте цифры.", Alert.AlertType.ERROR);
+                } catch (TransactionFailureException e) {
+                    showAlert("Ошибка сохранения", e.getMessage(), Alert.AlertType.ERROR);
                 } catch (Exception e) {
-                    showAlert("Ошибка", e.getMessage(), Alert.AlertType.ERROR);
+                    showAlert("Неизвестная ошибка", e.getMessage(), Alert.AlertType.ERROR);
                 }
             }
         });
     }
+
 
     @FXML
     private void addBankAccount() {
         TextInputDialog nameDialog = new TextInputDialog();
         nameDialog.setTitle("Новый счет");
         nameDialog.setHeaderText("Название счета");
-        applyDialogStyles(nameDialog); // БЕЗОПАСНЫЙ ВЫЗОВ
+        applyDialogStyles(nameDialog);
 
         nameDialog.showAndWait().ifPresent(name -> {
             if (name.trim().isEmpty()) return;
             TextInputDialog balDialog = new TextInputDialog("0");
             balDialog.setTitle("Баланс");
             balDialog.setHeaderText("Начальный баланс");
-            applyDialogStyles(balDialog); // БЕЗОПАСНЫЙ ВЫЗОВ
+            applyDialogStyles(balDialog);
 
             balDialog.showAndWait().ifPresent(balStr -> {
                 try {
                     walletService.createAccount(name, new BigDecimal(balStr.replace(",", ".")));
                     updateUI();
+                } catch (ValidationException e) {
+                    showAlert("Ошибка ввода", e.getMessage(), Alert.AlertType.WARNING);
                 } catch (Exception e) {
                     showAlert("Ошибка", e.getMessage(), Alert.AlertType.ERROR);
                 }
@@ -310,7 +354,7 @@ public class MainController {
         try {
             if (selected == null) throw new AccountNotSelectedException("Выберите счет");
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "Удалить счет?", ButtonType.YES, ButtonType.NO);
-            applyDialogStyles(confirm); // БЕЗОПАСНЫЙ ВЫЗОВ
+            applyDialogStyles(confirm);
 
             confirm.showAndWait().ifPresent(resp -> {
                 if (resp == ButtonType.YES) {
@@ -318,10 +362,17 @@ public class MainController {
                     updateUI();
                 }
             });
-        } catch (Exception e) {
+        } catch (AccountNotSelectedException e) {
             showAlert("Внимание", e.getMessage(), Alert.AlertType.WARNING);
+        } catch (BusinessLogicException e) {
+            showAlert("Ошибка удаления", e.getMessage(), Alert.AlertType.WARNING);
+        } catch (TransactionFailureException e) {
+            showAlert("Ошибка сохранения", e.getMessage(), Alert.AlertType.ERROR);
+        } catch (Exception e) {
+            showAlert("Критическая ошибка", e.getMessage(), Alert.AlertType.ERROR);
         }
     }
+
 
     @FXML
     private void handleTabSwitch() {
@@ -335,7 +386,7 @@ public class MainController {
         alert.setTitle("Настройки");
         alert.setHeaderText("Сброс данных");
         alert.setContentText("Удалить ВСЕ данные? Это действие необратимо.");
-        applyDialogStyles(alert); // БЕЗОПАСНЫЙ ВЫЗОВ
+        applyDialogStyles(alert);
 
         ButtonType resetButton = new ButtonType("Сбросить всё", ButtonBar.ButtonData.OK_DONE);
         alert.getButtonTypes().setAll(resetButton, ButtonType.CANCEL);
@@ -343,7 +394,6 @@ public class MainController {
 
         alert.showAndWait().ifPresent(type -> {
             if (type == resetButton) {
-                // ТЕПЕРЬ РАБОТАЕТ, ТАК КАК МЕТОД ЕСТЬ В SERVICE
                 walletService.clearAllData();
                 updateUI();
                 showAlert("Готово", "Данные очищены.", Alert.AlertType.INFORMATION);
@@ -355,22 +405,21 @@ public class MainController {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setContentText(content);
-        applyDialogStyles(alert); // БЕЗОПАСНЫЙ ВЫЗОВ
+        applyDialogStyles(alert);
         alert.showAndWait();
     }
 
-    // ИСПРАВЛЕННЫЙ МЕТОД: Не падает, если CSS не найден
     private void applyDialogStyles(Dialog<?> dialog) {
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getStyleClass().add("dialog-pane");
 
-        URL css = getClass().getResource("styles.css");
-        if (css == null) css = getClass().getResource("/styles.css"); // Ищем в корне
+        URL css = getClass().getResource("com/wallet/gui/styles.css");
+        if (css == null) css = getClass().getResource("/com/wallet/gui/styles.css");
 
         if (css != null) {
             dialogPane.getStylesheets().add(css.toExternalForm());
         } else {
-            System.err.println("CSS not found, dialog will use default styles.");
+            System.err.println("CSS не найден.");
         }
     }
 }
